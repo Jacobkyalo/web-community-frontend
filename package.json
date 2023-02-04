@@ -1,6 +1,6 @@
 {
   "name": "web-attendance",
-  "proxy": "https://web-community-backend.onrender.com",
+  "proxy": "https://web-community-attendance-backend-production.up.railway.app",
   "private": true,
   "version": "0.0.0",
   "type": "module",

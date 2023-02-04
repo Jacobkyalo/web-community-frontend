@@ -21,7 +21,7 @@ export const Form = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await Axios.post(
-      "https://web-community-backend.onrender.com/attendance",
+      "https://web-community-attendance-backend-production.up.railway.app/attendance",
       state
     );
     console.log(res);
