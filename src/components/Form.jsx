@@ -24,7 +24,7 @@ export const Form = () => {
     e.preventDefault();
     setLoading(true);
     await Axios.post(
-      "https://web-community-attendance-backend-production.up.railway.app/attendance",
+      "https://zany-puce-boa-veil.cyclic.app/attendance",
       state
     );
     setLoading(false);
