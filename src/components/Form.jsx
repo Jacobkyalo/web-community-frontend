@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
-import { Loading } from "./Loading";
+import { COLL_ID, DB_ID, databases } from "../config/appwrite";
+import { ID } from "appwrite";
+import { toast } from "react-toastify";
 
 export const Form = () => {
   const [loading, setLoading] = useState(false);
@@ -22,74 +23,114 @@ export const Form = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    await Axios.post(
-      "https://web-community-attendance-backend-production.up.railway.app/attendance",
-      state
-    );
-    setLoading(false);
-    navigate("/confirm");
+
+    try {
+      setLoading(true);
+      await databases.createDocument(DB_ID, COLL_ID, ID.unique(), state);
+      setState({
+        firstname: "",
+        lastname: "",
+        year: null,
+        message: "",
+      });
+      setLoading(false);
+      toast.success("Your attendance submitted successfully");
+    } catch (error) {
+      toast.error(error.message);
+    }
+
+    // navigate("/");
   };
 
   return (
     <div className="container">
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className="form-wrapper">
-          <h2 className="form-header">
+      <div className="flex flex-col items-center justify-center">
+        <form onSubmit={handleSubmit} className="w-full max-w-lg">
+          <h2 className="text-md opacity-80 mb-4">
             Please fill the following fields to submit your attendance!
           </h2>
-          <div className="form">
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="firstname">Firstname</label>
-                <input
-                  type="text"
-                  placeholder="Firstname"
-                  name="firstname"
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="lastname">Lastname</label>
-                <input
-                  type="text"
-                  placeholder="Lastname"
-                  name="lastname"
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="year">Year of Study</label>
-                <input
-                  type="number"
-                  placeholder="Year of Study"
-                  name="year"
-                  min="1"
-                  max="4"
-                  required
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="message">Message</label>
-                <textarea
-                  name="message"
-                  cols="30"
-                  rows="3"
-                  placeholder="Message about the today's session"
-                  required
-                  onChange={handleChange}
-                />
-              </div>
-              <input type="submit" value="Submit Attendance" />
-            </form>
+          <div className="mb-2">
+            <label htmlFor="firstname" className="block mb-1">
+              Firstname
+            </label>
+            <input
+              type="text"
+              placeholder="Firstname"
+              className="border rounded-md p-3 w-full outline-none"
+              name="firstname"
+              value={state.firstname}
+              onChange={handleChange}
+              required
+            />
           </div>
-        </div>
-      )}
+          <div className="mb-2">
+            <label htmlFor="lastname" className="block mb-1">
+              Lastname
+            </label>
+            <input
+              type="text"
+              placeholder="Lastname"
+              className="border rounded-md p-3 w-full outline-none"
+              name="lastname"
+              value={state.lastname}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="mb-2">
+            <label htmlFor="year" className="block mb-1">
+              Year of Study
+            </label>
+            <select
+              name="year"
+              defaultValue={"Select year"}
+              value={state.year}
+              onChange={handleChange}
+              className="border rounded-md p-3 w-full outline-none"
+              placeholder="Select year"
+            >
+              <option value={"Select year"} disabled>
+                Select year
+              </option>
+              <option value={1}>1</option>
+              <option value={2}>2</option>
+              <option value={3}>3</option>
+              <option value={4}>4</option>
+            </select>
+            {/* <input
+              type="number"
+              placeholder="Year of Study"
+              className="border rounded-md p-3 w-full"
+              name="year"
+              min="1"
+              max="4"
+              required
+              onChange={handleChange}
+            /> */}
+          </div>
+          <div className="form-group">
+            <label htmlFor="message" className="block mb-1">
+              Message
+            </label>
+            <textarea
+              name="message"
+              cols="30"
+              value={state.message}
+              rows="5"
+              placeholder="Message about the today's session"
+              className="border rounded-md p-3 w-full outline-none"
+              required
+              onChange={handleChange}
+            />
+          </div>
+          <button
+            type="submit"
+            className="py-3 w-full bg-green-600 text-white text-lg rounded-md mt-6"
+          >
+            {loading ? "Please wait..." : "Submit"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

@@ -4,8 +4,10 @@ import { Form } from "./Form";
 export const Home = () => {
   return (
     <div className="container">
-      <Header />
-      <Form />
+      <div className="flex flex-col items-center justify-center">
+        <Header />
+        <Form />
+      </div>
     </div>
   );
 };
