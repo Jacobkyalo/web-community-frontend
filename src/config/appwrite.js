@@ -4,8 +4,8 @@ const client = new Client();
 
 client
   .setEndpoint("https://cloud.appwrite.io/v1")
-  .setProject("652388d55943b0de9c9d");
+  .setProject(import.meta.env.VITE_PROJECT_ID);
 
 export const databases = new Databases(client);
-export const DB_ID = "65238afd9b068dabc6b1";
-export const COLL_ID = "65238b2a36687c3d797c";
+export const DB_ID = import.meta.env.VITE_DB_ID;
+export const COLL_ID = import.meta.env.VITE_COLL_ID;

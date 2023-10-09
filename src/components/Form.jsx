@@ -9,7 +9,7 @@ export const Form = () => {
   const [state, setState] = useState({
     firstname: "",
     lastname: "",
-    year: null,
+    year: "",
     message: "",
   });
 
@@ -30,7 +30,7 @@ export const Form = () => {
       setState({
         firstname: "",
         lastname: "",
-        year: null,
+        year: "",
         message: "",
       });
       setLoading(false);
@@ -58,6 +58,7 @@ export const Form = () => {
               placeholder="Firstname"
               className="border rounded-md p-3 w-full outline-none"
               name="firstname"
+              id="firstname"
               value={state.firstname}
               onChange={handleChange}
               required
@@ -72,6 +73,7 @@ export const Form = () => {
               placeholder="Lastname"
               className="border rounded-md p-3 w-full outline-none"
               name="lastname"
+              id="lastname"
               value={state.lastname}
               onChange={handleChange}
               required
@@ -83,15 +85,14 @@ export const Form = () => {
             </label>
             <select
               name="year"
-              defaultValue={"Select year"}
+              id="year"
+              // defaultValue={"Select year"}
               value={state.year}
               onChange={handleChange}
               className="border rounded-md p-3 w-full outline-none"
               placeholder="Select year"
             >
-              <option value={"Select year"} disabled>
-                Select year
-              </option>
+              <option value="Select year">Select year</option>
               <option value={1}>1</option>
               <option value={2}>2</option>
               <option value={3}>3</option>
@@ -114,6 +115,7 @@ export const Form = () => {
             </label>
             <textarea
               name="message"
+              id="message"
               cols="30"
               value={state.message}
               rows="5"
