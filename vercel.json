@@ -1,5 +1,5 @@
 {
   "redirects": [
-    { "source": "/all", "destination": "https://web-community.vercel.app/" }
+    { "source": "/all", "destination": "https://web-community.vercel.app/all" }
   ]
 }
