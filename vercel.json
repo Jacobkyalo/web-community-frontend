@@ -1,3 +1,5 @@
 {
-  "redirects": [{ "source": "/(.*)", "destination": "/*", "permanent": false }]
+  "redirects": [
+    { "source": "/(.*)", "destination": "/all", "permanent": false }
+  ]
 }
