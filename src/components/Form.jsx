@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { COLL_ID, DB_ID, databases } from "../config/appwrite";
 import { ID } from "appwrite";
 import { toast } from "react-toastify";
@@ -47,7 +47,8 @@ export const Form = () => {
       <div className="flex flex-col items-center justify-center">
         <form onSubmit={handleSubmit} className="w-full max-w-lg">
           <h2 className="text-md opacity-80 mb-4">
-            Please fill the following fields to submit your attendance!
+            Please fill the following fields to submit your
+            <Link to="/all">attendance</Link>
           </h2>
           <div className="mb-2">
             <label htmlFor="firstname" className="block mb-1">
