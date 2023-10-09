@@ -24,6 +24,9 @@ export default function AllPeople() {
   }, []);
 
   const date = new Date().toLocaleDateString();
+  const getNowDate = (str) => {
+    return new Date(str).toLocaleDateString();
+  };
 
   return (
     <section className="my-8">
@@ -43,20 +46,21 @@ export default function AllPeople() {
                 <th className="text-start">Message</th>
               </tr>
             </thead>
-
             {attendees?.length < 1 ? (
-              <p className="mt-4">No attendees yet</p>
+              <caption className="mt-4">No attendees yet</caption>
             ) : (
               <tbody>
-                {attendees?.map((attendee) => (
-                  <tr key={attendee.$id} className="border text-start p-4">
-                    <td>
-                      {attendee.firstname} {attendee.lastname}
-                    </td>
-                    <td>{attendee.year}</td>
-                    <td>{attendee.message}</td>
-                  </tr>
-                ))}
+                {attendees
+                  ?.filter((att) => getNowDate(att.$createdAt) === date)
+                  .map((attendee) => (
+                    <tr key={attendee.$id} className="border text-start p-4">
+                      <td>
+                        {attendee.firstname} {attendee.lastname}
+                      </td>
+                      <td>{attendee.year}</td>
+                      <td>{attendee.message}</td>
+                    </tr>
+                  ))}
               </tbody>
             )}
           </table>
