@@ -61,8 +61,7 @@ export const Form = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-lg">
           <h2 className="text-md opacity-80 mb-4">
             Please fill the following fields to submit your
-            <Link to="/all"> attendance</Link>
-            <Link to="/images"> images</Link>
+            <Link to="/all">attendance</Link>
           </h2>
           <div className="mb-2">
             <label htmlFor="firstname" className="block mb-1">
