@@ -1,38 +1,51 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { COLL_ID, DB_ID, databases } from "../config/appwrite";
+import {
+  BUCKET_ID,
+  COLL_ID,
+  DB_ID,
+  databases,
+  storage,
+} from "../config/appwrite";
 import { ID } from "appwrite";
 import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 export const Form = () => {
   const [loading, setLoading] = useState(false);
-  const [state, setState] = useState({
-    firstname: "",
-    lastname: "",
-    year: "",
-    message: "",
+
+  const schema = yup.object().shape({
+    firstname: yup.string().required(),
+    lastname: yup.string().required(),
+    year: yup.string().required(),
+    message: yup.string().required(),
+    snippet: yup.string().required(),
   });
 
-  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
 
-  const handleChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setState({ ...state, [name]: value });
+  const handleFileUpload = async () => {
+    try {
+      await storage.createFile(BUCKET_ID, ID.unique(), snippet);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
-  const handleSubmit = async (e) => {
+  const onSubmit = async (e, data) => {
     e.preventDefault();
 
     try {
       setLoading(true);
-      await databases.createDocument(DB_ID, COLL_ID, ID.unique(), state);
-      setState({
-        firstname: "",
-        lastname: "",
-        year: "",
-        message: "",
-      });
+      await databases.createDocument(DB_ID, COLL_ID, ID.unique(), data);
+      await handleFileUpload();
+
       setLoading(false);
       toast.success("Your attendance submitted successfully");
     } catch (error) {
@@ -45,10 +58,11 @@ export const Form = () => {
   return (
     <div className="container">
       <div className="flex flex-col items-center justify-center">
-        <form onSubmit={handleSubmit} className="w-full max-w-lg">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-lg">
           <h2 className="text-md opacity-80 mb-4">
             Please fill the following fields to submit your
-            <Link to="/all">attendance</Link>
+            <Link to="/all"> attendance</Link>
+            <Link to="/images"> images</Link>
           </h2>
           <div className="mb-2">
             <label htmlFor="firstname" className="block mb-1">
@@ -60,10 +74,11 @@ export const Form = () => {
               className="border rounded-md p-3 w-full outline-none"
               name="firstname"
               id="firstname"
-              value={state.firstname}
-              onChange={handleChange}
-              required
+              {...register("firstname")}
             />
+            <p className="text-red-600 text-sm first-letter:uppercase mt-1">
+              {errors.firstname?.message}
+            </p>
           </div>
           <div className="mb-2">
             <label htmlFor="lastname" className="block mb-1">
@@ -75,10 +90,11 @@ export const Form = () => {
               className="border rounded-md p-3 w-full outline-none"
               name="lastname"
               id="lastname"
-              value={state.lastname}
-              onChange={handleChange}
-              required
+              {...register("lastname")}
             />
+            <p className="text-red-600 text-sm first-letter:uppercase mt-1">
+              {errors.lastname?.message}
+            </p>
           </div>
           <div className="mb-2">
             <label htmlFor="year" className="block mb-1">
@@ -87,9 +103,7 @@ export const Form = () => {
             <select
               name="year"
               id="year"
-              // defaultValue={"Select year"}
-              value={state.year}
-              onChange={handleChange}
+              {...register("year")}
               className="border rounded-md p-3 w-full outline-none"
               placeholder="Select year"
             >
@@ -99,18 +113,27 @@ export const Form = () => {
               <option value={3}>3</option>
               <option value={4}>4</option>
             </select>
-            {/* <input
-              type="number"
-              placeholder="Year of Study"
-              className="border rounded-md p-3 w-full"
-              name="year"
-              min="1"
-              max="4"
-              required
-              onChange={handleChange}
-            /> */}
+            <p className="text-red-600 text-sm first-letter:uppercase mt-1">
+              {errors.year?.message}
+            </p>
           </div>
-          <div className="form-group">
+          <div className="mb-2">
+            <label htmlFor="snippet" className="block mb-1">
+              Code snippet
+            </label>
+            <input
+              type="file"
+              placeholder="Code snippet"
+              className="border rounded-md p-3 w-full outline-none"
+              name="snippet"
+              id="snippet"
+              {...register("snippet")}
+            />
+            <p className="text-red-600 text-sm first-letter:uppercase mt-1">
+              {errors.snippet?.message}
+            </p>
+          </div>
+          <div>
             <label htmlFor="message" className="block mb-1">
               Message
             </label>
@@ -118,14 +141,16 @@ export const Form = () => {
               name="message"
               id="message"
               cols="30"
-              value={state.message}
               rows="5"
               placeholder="Message about the today's session"
               className="border rounded-md p-3 w-full outline-none"
-              required
-              onChange={handleChange}
+              {...register("message")}
             />
+            <p className="text-red-600 text-sm first-letter:uppercase mt-1">
+              {errors.message?.message}
+            </p>
           </div>
+
           <button
             type="submit"
             className="py-3 w-full bg-green-600 text-white text-lg rounded-md mt-6"
